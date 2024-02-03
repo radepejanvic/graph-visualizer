@@ -1,4 +1,4 @@
-{% block head_sadrzaj %}
+{% block head_content %}
 <style>
     .node {
         cursor: pointer;
@@ -7,8 +7,8 @@
 
     .link {
         fill: none;
-        stroke: #9ecae1;
-        stroke-width: 1.5px;
+        stroke: #238636;
+        stroke-width: 2px;
     }
 </style>
 <script>
@@ -60,7 +60,7 @@
         .links(links)
         .on("tick", tick)
         .linkDistance(300)
-        .charge(-2000)
+        .charge(-10000)
         .start();
 
     var svg=d3.select('svg');
