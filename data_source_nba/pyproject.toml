@@ -1,5 +1,5 @@
 [project]
-name = "data-source-json"
+name = "dsnba"
 version = "0.1"
 
 [build-system]
@@ -7,4 +7,4 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project.entry-points."data_sources"]
-# dsjson = "ovde uneti putanju do klase koja se koristi"
+dsnba = "data_source_nba.data_source_nba:NBADataSource"
