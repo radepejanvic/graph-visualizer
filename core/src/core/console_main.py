@@ -1,83 +1,66 @@
 from typing import List, Union
-
-import pkg_resources
-
 from api.src.api.services.base import DataSourceBase, VisualizerBase
-from api.src.api.models.model import Graph,Node
+from core import Core
 
 
-def console_menu(*args, **kwargs):
+def console_menu(core: Core):
     plugins: List[Union[DataSourceBase, VisualizerBase]] = \
-        kwargs.get("data_sources", []) + kwargs.get("visualizers", [])
+        core.data_sources + core.visualizers
+
     if not plugins:
         print("No plugins found!")
         return
 
-    greska = False
-    poruka = None
+    error = False
+    message = None
     while True:
         print("-----------------------------------")
-        if greska:
-            print("Uneli ste pogresnu vrednost za opciju")
-            greska = False
-        if poruka:
-            print(poruka)
-        print("Izaberite broj opcije:")
+        if error:
+            print("Wrong input!")
+            error = False
+        if message:
+            print(message)
+        print("Choose the option: ")
 
         for i, plugin in enumerate(plugins):
-            print(f"{i} {plugin.identifier()} - {plugin.name()}")
+            print(f"{i}) {plugin.identifier()} - {plugin.name()}")
         print("X - exit")
         try:
-            izbor = input("Unesite redni broj opcije")
+            choice = input("Enter the ordinal number of the option: ")
         except:
-            greska = True
+            error = True
             continue
-        if izbor.upper() == "X":
+        if choice.upper() == "X":
             return
-        elif 0 <= int(izbor) < len(plugins):
-            poruka = choosen_option(plugins[int(izbor)], **kwargs)
+        elif 0 <= int(choice) < len(plugins):
+            message = chosen_option(plugins[int(choice)], core)
         else:
-            greska = True
+            error = True
 
-def choosen_option(plugin: Union[DataSourceBase, VisualizerBase], **kwargs):
+
+def chosen_option(plugin: Union[DataSourceBase, VisualizerBase], core: Core):
     try:
         if isinstance(plugin, DataSourceBase):
-            graph = kwargs["graph"]
-            graph = plugin.load()
-            return graph
+            core.graph = plugin.load()
         elif isinstance(plugin, VisualizerBase):
-            graph = kwargs["graph"]
-            return plugin.display(graph)
-    except Exception as e: 
+            return plugin.display(core.graph)
+    except Exception as e:
         print(f"Error: {e}")
-
-
-def load_plugins(group: str):
-    plugins = []
-
-    for ep in pkg_resources.iter_entry_points(group=group):
-        p = ep.load()
-        print(f"{ep.name} {p}")
-        plugin = p()
-        plugins.append(plugin)
-
-    return plugins
 
 
 def main():
     try:
-        data_sources = load_plugins("data_sources")
-        visualizers = load_plugins("visualizers")
+        core = Core()
     except Exception as e:
         print(f"Error: {e}")
         return
 
     try:
-        graph = Graph()
-        console_menu(data_sources=data_sources,
-                     visualizers=visualizers,
-                     graph=graph)
-
+        console_menu(core)
     except Exception as e:
         print(f"Error: {e}")
         return
+
+
+if __name__ == "__main__":
+    main()
