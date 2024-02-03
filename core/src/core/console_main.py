@@ -3,6 +3,7 @@ from typing import List, Union
 import pkg_resources
 
 from api.src.api.services.base import DataSourceBase, VisualizerBase
+from api.src.api.models.model import Graph,Node
 
 
 def console_menu(*args, **kwargs):
@@ -12,24 +13,43 @@ def console_menu(*args, **kwargs):
         print("No plugins found!")
         return
 
-    for i, plugin in enumerate(plugins):
-        print(f"{i} {plugin.identifier()} - {plugin.name()}")
-    print("X - exit")
+    greska = False
+    poruka = None
+    while True:
+        print("-----------------------------------")
+        if greska:
+            print("Uneli ste pogresnu vrednost za opciju")
+            greska = False
+        if poruka:
+            print(poruka)
+        print("Izaberite broj opcije:")
 
+        for i, plugin in enumerate(plugins):
+            print(f"{i} {plugin.identifier()} - {plugin.name()}")
+        print("X - exit")
+        try:
+            izbor = input("Unesite redni broj opcije")
+        except:
+            greska = True
+            continue
+        if izbor.upper() == "X":
+            return
+        elif 0 <= int(izbor) < len(plugins):
+            poruka = choosen_option(plugins[int(izbor)], **kwargs)
+        else:
+            greska = True
 
-# def izabrana_opcija(plugin: Union[DataSourceBase, VisualizerBase], **kwargs):
-#     try:
-#         if isinstance(plugin, DataSourceBase):
-#             fakulteti = kwargs["fakulteti"]
-#             pomocna_lista = plugin.ucitati_fakultete()
-#             del fakulteti[:]
-#             fakulteti.extend(pomocna_lista)
-#             return "Ucitani fakulteti"
-#         elif isinstance(plugin, FakultetPrikazBase):
-#             fakulteti = kwargs["fakulteti"]
-#             return plugin.prikazati_fakultete(fakulteti)
-#     except Exception as e:
-#         print(f"Error: {e}")
+def choosen_option(plugin: Union[DataSourceBase, VisualizerBase], **kwargs):
+    try:
+        if isinstance(plugin, DataSourceBase):
+            graph = kwargs["graph"]
+            graph = plugin.load()
+            return graph
+        elif isinstance(plugin, VisualizerBase):
+            graph = kwargs["graph"]
+            return plugin.display(graph)
+    except Exception as e: 
+        print(f"Error: {e}")
 
 
 def load_plugins(group: str):
@@ -53,8 +73,10 @@ def main():
         return
 
     try:
+        graph = Graph()
         console_menu(data_sources=data_sources,
-                     visualizers=visualizers)
+                     visualizers=visualizers,
+                     graph=graph)
 
     except Exception as e:
         print(f"Error: {e}")
