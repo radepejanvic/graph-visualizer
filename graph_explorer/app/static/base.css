@@ -166,8 +166,10 @@ button {
     color: var(--github-text);
     font-size: 16px;
     font-weight: bold;
-    /*background: red;*/
-    /*background: ;*/
+}
+
+.filter-color {
+    filter: invert(92%) sepia(12%) saturate(108%) hue-rotate(163deg) brightness(98%) contrast(100%);
 }
 
 
