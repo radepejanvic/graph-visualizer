@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         {% load static %}
         <script type="text/javascript" src="{% static 'd3.v3.js' %}"></script>
+        <script type="text/javascript" src="{% static 'script.js' %}"></script>
         <link rel="stylesheet" href="{% static 'base.css' %}" />
         <title> Graph visualizer </title>
         {% block head_content %}{% endblock %}
@@ -12,7 +13,7 @@
         <header>
             <div class="logo">
                 <h1>
-                    <img src="../static/logo.svg" alt="logo.svg" class="filter-color"/>
+                    <img src="{% static 'logo.svg' %}" alt="logo.svg" class="filter-color"/>
                     GRAPHV
                 </h1>
                 <h3> Graph visualization tool</h3>
@@ -20,22 +21,16 @@
             <div class="toolbar">
                 <div class="tools-row-1">
 
-{#                    {% if data_sources %}#}
-{#                        {% for ds in data_sources%}#}
-{#                            <a href="{% url 'nba' %}">{{ds.name}}</a>#}
-{#                        {% endfor %}#}
-{#                    {% endif %}#}
-
-                    <select>
-                        <option> Visualizer </option>
+                    <select id="visualizer_select" onchange="redirect()">
+                        <option value="0"> Visualizer </option>
                         {% if visualizers %}
                             {% for vs in visualizers %}
                                 <option value="{{ forloop.counter }}">{{ vs.name }}</option>
                             {% endfor %}
                         {% endif %}
                     </select>
-                    <select>
-                        <option> Data source </option>
+                    <select id="data_source_select" onchange="redirect()">
+                        <option value="0"> Data source </option>
                         {% if data_sources %}
                             {% for ds in data_sources %}
                                 <option value="{{ forloop.counter }}">{{ ds.name }}</option>
