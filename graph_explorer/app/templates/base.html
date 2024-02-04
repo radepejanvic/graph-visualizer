@@ -4,29 +4,67 @@
         <meta charset="UTF-8" />
         {% load static %}
         <script type="text/javascript" src="{% static 'd3.v3.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'style.css' %}" />
-        <title>{{title}}</title>
-        {% block head_sadrzaj %}{% endblock %}
+        <script type="text/javascript" src="{% static 'script.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'base.css' %}" />
+        <title> Graph visualizer </title>
+        {% block head_content %}{% endblock %}
+
     </head>
     <body>
-        <div class="page">
-            <div class="header">
-                <div>
-                    <a href="{% url 'index' %}">D3 primeri index</a>
+        <header>
+            <div class="logo">
+                <h1>
+                    <img src="{% static 'logo.svg' %}" alt="logo.svg" class="filter-color"/>
+                    GRAPHV
+                </h1>
+                <h3> Graph visualization tool</h3>
+            </div>
+            <div class="toolbar">
+                <div class="tools-row-1">
+
+                    <select id="visualizer_select" onchange="redirect()">
+                        <option value="0"> Visualizer </option>
+                        {% if visualizers %}
+                            {% for vs in visualizers %}
+                                <option value="{{ forloop.counter }}">{{ vs.name }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                    <select id="data_source_select" onchange="redirect()">
+                        <option value="0"> Data source </option>
+                        {% if data_sources %}
+                            {% for ds in data_sources %}
+                                <option value="{{ forloop.counter }}">{{ ds.name }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                    <form>
+                        <input type="text" id="search" name="search" placeholder="Search & filter">
+                        <button type="submit">Apply</button>
+                    </form>
                 </div>
-                <div>
-                    {% if plugini_ucitavanje %} {% for p in plugini_ucitavanje%}
-                    <a href="{% url 'nba' %}">{{p.name}}</a>
-                    {% endfor %} {% else %}
-                    <h3>Nema prepoznatih plugina za ucitavanje</h3>
-                    {% endif %}
+                <div class="tools-row-2">
+                    <!-- TODO: Place selected queries -->
                 </div>
             </div>
-            <div class="center">{% block content %}{% endblock %}</div>
-            <div><h1>{{ main_view|safe }}</h1></div>
-            <div class="footer">
-                Primer za vezbe iz predmeta Softverski obrasci i komponente
+        </header>
+
+        <main>
+            <div class="side-menu">
+                <div class="tree-view">
+    {#                <div class="center">{% block content %}{% endblock %}</div>#}
+                </div>
+                <div class="bird-view">
+
+                </div>
             </div>
-        </div>
+            <div class="main-view">
+                {{ main_view|safe }}
+            </div>
+        </main>
+
+        <footer>
+            <!-- TODO: Place workspaces -->
+        </footer>
     </body>
 </html>

@@ -1,14 +1,16 @@
-{% block head_sadrzaj %}
+{% block head_content %}
 <style>
     .node {
         cursor: pointer;
-        color: #3182bd;
+        background: var(--github-background-1);
+        color: var(--github-text);
+        stroke: var(--github-text);
     }
 
     .link {
         fill: none;
-        stroke: #9ecae1;
-        stroke-width: 1.5px;
+        stroke: var(--github-button);
+        stroke-width: 2px;
     }
 </style>
 <script>
@@ -17,10 +19,11 @@
     }
 </script>
 {% endblock %} {% block content %}
-<div>
-    <svg width="900" height="900"></svg>
-</div>
+<svg width="100%" height="100%"></svg>
 <script>
+    let height = 100;
+    let width = 150;
+
     var nodes={
 
         {% for node in graph.nodes %}
@@ -59,8 +62,8 @@
         .nodes(d3.values(nodes))
         .links(links)
         .on("tick", tick)
-        .linkDistance(300)
-        .charge(-2000)
+        .linkDistance(500)
+        .charge(-10000)
         .start();
 
     var svg=d3.select('svg');
@@ -79,38 +82,32 @@
            nodeClick(this);
         });
 
-    d3.selectAll('.node').each(function(d){slozenPrikaz(d);});
+    d3.selectAll('.node').each(function(d){complexView(d);});
 
-    function slozenPrikaz(d){
-      var duzina=150;
-
-      var textSize=10;
-      var visina=100;
-      visina+=textSize;
+    function complexView(d){
+      let textSize=10;
 
       d3.select("g#"+d.name)
           .append('rect')
           .attr('x',0)
           .attr('y',0)
-          .attr('width',duzina)
-          .attr('height',visina)
-          .attr('fill','#B4B4B8');
+          .attr('width',width)
+          .attr('height',height);
 
       d3.select("g#"+d.name)
           .append('text')
-          .attr('x',duzina/2)
+          .attr('x',width/2)
           .attr('y',10)
           .attr('text-anchor','middle')
           .attr('font-size',textSize)
           .attr('font-family','sans-serif')
-          .attr('fill','black')
           .text(d.name);
 
       d3.select("g#"+d.name)
           .append('line')
           .attr('x1',0)
           .attr('y1',textSize+10)
-          .attr('x2',duzina)
+          .attr('x2',width)
           .attr('y2',textSize+10)
           .attr('stroke','gray')
           .attr('stroke-width',2);
@@ -123,8 +120,8 @@
               .attr('text-anchor','start')
               .attr('font-size',textSize)
               .attr('font-family','sans-serif')
-              .attr('fill','black')
-              .text(key+":"+value);
+              {#.attr('fill','black')#}
+              .text(`${key}: ${value}`);
         })
     }
 
@@ -135,10 +132,10 @@
         })
             .call(force.drag);
 
-        link.attr('x1', function(d) { return d.source.x; })
-            .attr('y1', function(d) { return d.source.y; })
-            .attr('x2', function(d) { return d.target.x; })
-            .attr('y2', function(d) { return d.target.y; });
+        link.attr('x1', function(d) { return d.source.x + width/2; })
+            .attr('y1', function(d) { return d.source.y + height/2; })
+            .attr('x2', function(d) { return d.target.x + width/2; })
+            .attr('y2', function(d) { return d.target.y + height/2; });
 
     }
 </script>
