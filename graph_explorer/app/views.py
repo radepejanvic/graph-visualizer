@@ -1,13 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from core.console_main import *
-
+from django.apps.registry import apps
 
 def index(request):
-    return render(request,"index.html", {"title": "Index", "plugini_ucitavanje": load_plugins("data_sources")})
+    core = apps.get_app_config("app").core
+    return render(request,"index.html", {"title": "Index", "plugini_ucitavanje": core.data_sources})
 
 
 def nba(request):
-    graph = load_plugins("data_sources")[0].load()
-    graph.printGraph()
-    return render(request,"index.html", {"title": "Index", "plugini_ucitavanje": load_plugins("data_sources"),"main_view": load_plugins("visualizers")[0].display(graph)})
+    core = apps.get_app_config("app").core
+    core.load_graph(0)
+    return render(request,"index.html", {"title": "Index", "plugini_ucitavanje": core.data_sources, "main_view": core.display_graph(0)})
