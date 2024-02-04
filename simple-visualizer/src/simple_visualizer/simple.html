@@ -20,8 +20,8 @@
 {% block content %}
     <script>
         const svg = d3.create("svg")
-        .attr("width", "100%")
-        .attr("height", "100%");
+            .attr("width", "100%")
+            .attr("height", "100%");
 
         // Append SVG container for the graph to the body
         document.getElementById("main-view").appendChild(svg.node());
@@ -46,9 +46,6 @@
             {% endfor %}
         };
 
-        console.log(nodesData);
-
-
         let links=[
             {% for p in graph.nodes %}
                {% for a in p.branches %}
@@ -58,8 +55,6 @@
                {% endfor %}
             {% endfor %}
         ];
-
-        console.log(links);
 
         // Convert the nodesData object to an array
         let nodes = Object.values(nodesData);
@@ -71,14 +66,23 @@
             .force("center", d3.forceCenter(width / 2, height / 2))
             .on("tick", tick);
 
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 10]) // Set the zoom scale limits as needed
+            .on("zoom", zoomed);
+
+        svg.call(zoom);
+
+        // Create a container group for graph elements
+        const graphContainer = svg.append("g");
+
         // Create links
-        const link = svg.selectAll(".link")
+        const link = graphContainer.selectAll(".link")
             .data(links)
             .join("line")
             .attr("class", "link");
 
         // Create nodes
-        const node = svg.selectAll(".node")
+        const node = graphContainer.selectAll(".node")
             .data(nodes)
             .join("g")
             .attr("class", "node")
@@ -111,7 +115,6 @@
         }
 
         function computeRadius(text) {
-            // You can adjust the scaling factor as needed
             return Math.max(10, text.length * 3);
         }
 
@@ -130,6 +133,11 @@
             if (!event.active) simulation.alphaTarget(0);
             d.fx = null;
             d.fy = null;
+        }
+
+        function zoomed(event) {
+            // Update the graph elements based on the zoom and pan transformation
+            graphContainer.attr("transform", event.transform);
         }
 
     </script>
