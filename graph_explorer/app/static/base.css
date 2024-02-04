@@ -11,7 +11,8 @@
     --github-background-2: #0D1117;
     --github-border: #30363D;
     --github-hint: #6E7681;
-    font-family: "Segoe UI", system-ui, sans-serif;
+    --font: "Segoe UI", system-ui, sans-serif;
+    font-family: var(--font);
     color: var(--github-text);
 }
 
