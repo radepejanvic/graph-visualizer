@@ -1,0 +1,121 @@
+{% block head_content %}
+<style>
+    .node {
+        cursor: pointer;
+        background: var(--github-background-1);
+        {#background: darkred;#}
+        color: var(--github-text);
+        stroke: var(--github-text);
+    }
+
+    .link {
+        fill: none;
+        {#stroke: var(--github-button);#}
+        stroke: darkred;
+        stroke-width: 2px;
+    }
+</style>
+<script type="text/javascript" src="https://d3js.org/d3.v7.js"></script>
+{% endblock %}
+{% block content %}
+    <script>
+        const svg = d3.create("svg")
+        .attr("width", "100%")
+        .attr("height", "100%");
+
+        // Append SVG container for the graph to the body
+        document.getElementById("main-view").appendChild(svg.node());
+
+        // Get the actual width and height of the SVG element
+        const width = svg.node().getBoundingClientRect().width;
+        const height = svg.node().getBoundingClientRect().height;
+
+        // Sample data with nodes and links
+        let nodesData={
+            {% for node in graph.nodes %}
+                "node_{{node.id}}": {
+                    id: "node_{{ node.id }}",
+                    name:"{{node.id}}",
+                    value:{
+                        {% for key, value in node.value.items() %}
+                            "{{ key }}": "{{ value }}"{% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    }
+                },
+
+            {% endfor %}
+        };
+
+        console.log(nodesData);
+
+
+        let links=[
+            {% for p in graph.nodes %}
+               {% for a in p.branches %}
+                  {
+                      source:"node_{{p.id}}",
+                      target:"node_{{a.destination.id}}"},
+               {% endfor %}
+            {% endfor %}
+        ];
+
+        console.log(links);
+
+        // Convert the nodesData object to an array
+        let nodes = Object.values(nodesData);
+
+        // Create a force simulation
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(500))
+            .force("charge", d3.forceManyBody().strength(-2000))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .on("tick", tick);
+
+        // Create links
+        const link = svg.selectAll(".link")
+            .data(links)
+            .join("line")
+            .attr("class", "link");
+
+        // Create nodes
+        const node = svg.selectAll(".node")
+            .data(nodes)
+            .join("g")
+            .attr("class", "node")
+
+
+        // Append circles to the nodes
+        node.append("circle")
+            .attr("r", 10) // Initial radius
+
+        // Append text to the nodes
+        node.append("text")
+            .text(d => d.name)
+            .attr("dy", "0.35em") // Adjust text vertical alignment
+            .style("text-anchor", "middle"); // Center text within the circle
+
+        // Update positions on each tick
+        function tick() {
+            // Update link positions
+            link.attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            // Update node positions
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+
+            // Adjust circle size based on text length
+            node.select("circle")
+                .attr("r", d => computeRadius(d.name));
+        }
+
+        function computeRadius(text) {
+            // You can adjust the scaling factor as needed
+            return Math.max(10, text.length * 3);
+        }
+
+
+
+    </script>
+{% endblock %}
