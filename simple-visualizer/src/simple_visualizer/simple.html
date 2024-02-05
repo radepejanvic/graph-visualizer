@@ -98,6 +98,40 @@
             .attr("dy", "0.35em") // Adjust text vertical alignment
             .style("text-anchor", "middle"); // Center text within the circle
 
+        const minimap = d3.create("svg")
+            .attr("width", "100%")  // Set the width of the minimap
+            .attr("height", "100%"); // Set the height of the minimap
+
+        document.getElementById("bird-view").appendChild(minimap.node());
+        const minimapWidth = minimap.node().getBoundingClientRect().width;
+        const minimapHeight = minimap.node().getBoundingClientRect().height;
+
+        const minimapScaleX = minimapWidth / width;
+        const minimapScaleY = minimapHeight / height;
+
+        const minimapScale = Math.min(minimapScaleX, minimapScaleY);
+
+        const minimapGraphContainer = minimap.append("g")
+            .attr("transform", `scale(0.5) translate(${minimapWidth / 2}, ${minimapHeight / 2}) `); // Adjust the translation as needed
+
+        // Render the entire graph in the minimap with reduced opacity
+        const minimapLink = minimapGraphContainer.selectAll(".link")
+            .data(links)
+            .enter().append("line")
+            .attr("class", "link")
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y)
+
+        const minimapNode = minimapGraphContainer.selectAll(".node")
+            .data(nodes)
+            .enter().append("circle")
+            .attr("class", "node")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", 5);
+
         // Update positions on each tick
         function tick() {
             // Update link positions
@@ -106,12 +140,22 @@
                 .attr("x2", d => d.target.x)
                 .attr("y2", d => d.target.y);
 
-            // Update node positions
+            // Update node positions for the main graph
             node.attr("transform", d => `translate(${d.x},${d.y})`);
 
-            // Adjust circle size based on text length
+            // Adjust circle size based on text length for the main graph nodes
             node.select("circle")
                 .attr("r", d => computeRadius(d.name));
+
+            // Update link positions for the minimap
+            minimapLink.attr("x1", d => d.source.x * minimapScale)
+                .attr("y1", d => d.source.y * minimapScale)
+                .attr("x2", d => d.target.x * minimapScale)
+                .attr("y2", d => d.target.y * minimapScale);
+
+            // Update node positions for the minimap
+            minimapNode.attr("cx", d => d.x * minimapScale)
+                .attr("cy", d => d.y * minimapScale);
         }
 
         function computeRadius(text) {
