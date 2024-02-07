@@ -52,8 +52,8 @@
         let links=[
             {% for p in graph.branches %}
                   {
-                      source:"node_{{p.source.id}}",
-                      target:"node_{{p.destination.id}}"
+                      source:"node_{{p.source}}",
+                      target:"node_{{p.destination}}"
                   },
             {% endfor %}
         ];

@@ -8,13 +8,17 @@ class Node:
 
 
 class Branch:
-    def __init__(self, source, destination, value=None):
+    def __init__(self, source, destination, value=None, directed=False):
         self.source = source
         self.destination = destination
         self.value = value
+        self.directed = directed
 
     def __contains__(self, item):
         return self.source == item or self.destination == item
+
+    def __str__(self):
+        return f"{self.source} {"-->" if self.directed else "---"} {self.destination}: {self.value}"
 
 
 class Graph(ABC):
@@ -39,10 +43,10 @@ class Graph(ABC):
         if destination.id not in self.nodes:
             self.add_node(destination)
 
-        self.branches.append(Branch(source, destination, value))
+        self.branches.append(Branch(source.id, destination.id, value))
 
     def get_branches_for_node(self, node):
         return [branch for branch in self.b if node in branch]
 
     def __str__(self):
-        return "".join([f"{b.source.id} ---> {b.destination.id}: {b.value}\n" for b in self.branches])
+        return "".join([f"{str(branch)}\n" for branch in self.b])
