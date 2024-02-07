@@ -59,7 +59,6 @@ class NBADataSource(DataSourceBase):
 
         for game in games:
             dictionary = {}
-            game_id = game.get("id")
             date = game.get("date")
 
             home_team = game.get("home_team", {})

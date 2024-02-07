@@ -27,7 +27,7 @@
 
     var nodes={
 
-        {% for node in graph.nodes %}
+        {% for node in graph.nodes.values() %}
             "node_{{node.id}}": {
                 name:"{{node.id}}",
                 value:{

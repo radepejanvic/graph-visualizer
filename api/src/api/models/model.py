@@ -13,22 +13,20 @@ class Branch:
 
 class Graph:
     def __init__(self):
-        self.nodes = []
+        self.nodes = {}
         self.branches = []
 
-    def add_node(self, value: Node):
-        self.nodes.append(value)
-        return value
+    def add_node(self, node: Node):
+        self.nodes[node.id] = node
 
     def add_edge(self, source: Node, destination: Node, value=None):
-        if source.id not in [node.id for node in self.nodes]:
+        if source.id not in self.nodes:
             self.add_node(source)
-        if destination.id not in [node.id for node in self.nodes]:
+        if destination.id not in self.nodes:
             self.add_node(destination)
 
-        source_node = next(node for node in self.nodes if node.id == source.id)
-        destination_node = next(node for node in self.nodes if node.id == destination.id)
-        self.branches.append(Branch(source_node, destination_node, value))
+        self.branches.append(Branch(source, destination, value))
 
     def __str__(self):
+        # return "".join([f"{node.id} ---> {node.value}\n" for node in self.nodes.values()])
         return "".join([f"{b.source.id} ---> {b.destination.id}: {b.value}\n" for b in self.branches])

@@ -35,7 +35,7 @@
 
         // Sample data with nodes and links
         let nodesData={
-            {% for node in graph.nodes %}
+            {% for node in graph.nodes.values() %}
                 "node_{{node.id}}": {
                     id: "node_{{ node.id }}",
                     name:"{{node.id}}",
