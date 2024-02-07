@@ -59,7 +59,6 @@ class NBADataSource(DataSourceBase):
 
         for game in games:
             dictionary = {}
-            game_id = game.get("id")
             date = game.get("date")
 
             home_team = game.get("home_team", {})
@@ -72,6 +71,6 @@ class NBADataSource(DataSourceBase):
 
             dictionary["score"] = str(home_team_score) + ":" + str(visitor_team_score)
             dictionary["date"] = date
-            graph.add_edge(Node(home_team_full_name, home_team), Node(visitor_team_full_name, visitor_team), dictionary)
-        graph.printGraph()
+            graph.add_branch(Node(home_team_full_name, home_team), Node(visitor_team_full_name, visitor_team), dictionary)
+        print(graph)
         return graph

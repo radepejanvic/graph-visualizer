@@ -27,7 +27,7 @@
 
     var nodes={
 
-        {% for node in graph.nodes %}
+        {% for node in graph.nodes.values() %}
             "node_{{node.id}}": {
                 name:"{{node.id}}",
                 value:{
@@ -44,8 +44,8 @@
     var links=[
         {% for p in graph.branches %}
               {
-                  source:"node_{{p.source.id}}",
-                  target:"node_{{p.destination.id}}"},
+                  source:"node_{{p.source}}",
+                  target:"node_{{p.destination}}"},
         {% endfor %}
     ];
 
