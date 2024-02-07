@@ -30,6 +30,9 @@
         const width = svg.node().getBoundingClientRect().width;
         const height = svg.node().getBoundingClientRect().height;
 
+        console.log("SVG WIDTH: ", width);
+        console.log("SVG HEIGHT: ", height);
+
         // Sample data with nodes and links
         let nodesData={
             {% for node in graph.nodes %}
@@ -61,18 +64,11 @@
 
         // Create a force simulation
         const simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(links).id(d => d.id).distance(500))
+            .force("link", d3.forceLink(links).id(d => d.id).distance(30))
             .force("charge", d3.forceManyBody().strength(-2000))
             .force("center", d3.forceCenter(width / 2, height / 2))
             .on("tick", tick);
 
-        const zoom = d3.zoom()
-            .scaleExtent([0.1, 10]) // Set the zoom scale limits as needed
-            .on("zoom", zoomed);
-
-        svg.call(zoom);
-
-        // Create a container group for graph elements
         const graphContainer = svg.append("g");
 
         // Create links
@@ -101,6 +97,12 @@
         const minimap = d3.create("svg")
             .attr("width", "100%")  // Set the width of the minimap
             .attr("height", "100%"); // Set the height of the minimap
+
+        const graphWidth = graphContainer.node().getBoundingClientRect().width;
+        const graphHeight = graphContainer.node().getBoundingClientRect().height;
+
+        console.log("GRAPH WIDTH: ", width);
+        console.log("GRAPH HEIGHT: ", height);
 
         document.getElementById("bird-view").appendChild(minimap.node());
         const minimapWidth = minimap.node().getBoundingClientRect().width;
@@ -179,10 +181,51 @@
             d.fy = null;
         }
 
+        {#function zoomed(event) {#}
+        {#    // Update the graph elements based on the zoom and pan transformation#}
+        {#    graphContainer.attr("transform", event.transform);#}
+        {#---}#}
+
+        const viewportIndicator = minimapGraphContainer.append("rect")
+            .attr("class", "viewport-indicator")
+            .attr("fill", "none")
+            .attr("stroke", "white") // Set the border color to darkred
+            .attr("stroke-width", 2);
+
         function zoomed(event) {
-            // Update the graph elements based on the zoom and pan transformation
-            graphContainer.attr("transform", event.transform);
+            const { transform } = event;
+            // apply calculated transform to the image
+            graphContainer.attr("transform", transform.toString());
+
+            const scale = 1 / transform.k;
+
+            const inverseTransform = new d3.ZoomTransform(
+                scale,
+                -transform.x * scale * minimapScaleX,
+                -transform.y * scale * minimapScaleY
+            );
+
+            // rect.attr("transform", inverseTransform.toString());
+            viewportIndicator.attr("transform", inverseTransform.toString());
         }
 
+        function updateViewport() {
+            const {
+                width: svgWidth,
+                height: svgHeight
+            } = svg.node().getBoundingClientRect();
+
+            viewportIndicator.attr("width", svgWidth * minimapScaleX).attr("height", svgHeight * minimapScaleY);
+        }
+
+        updateViewport();
+
+        const zoom = d3.zoom()
+            .scaleExtent([1, 10]) // Set the zoom scale limits as needed
+            .on("zoom", zoomed);
+
+        svg.call(zoom);
+
+        window.addEventListener("resize", updateViewport);
     </script>
 {% endblock %}
