@@ -37,7 +37,7 @@ class Graph(ABC):
     def add_node(self, node: Node):
         self.n[node.id] = node
 
-    def add_edge(self, source: Node, destination: Node, value=None):
+    def add_branch(self, source: Node, destination: Node, value=None):
         if source.id not in self.nodes:
             self.add_node(source)
         if destination.id not in self.nodes:
