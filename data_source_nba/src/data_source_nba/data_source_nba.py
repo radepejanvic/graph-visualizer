@@ -73,5 +73,5 @@ class NBADataSource(DataSourceBase):
             dictionary["score"] = str(home_team_score) + ":" + str(visitor_team_score)
             dictionary["date"] = date
             graph.add_edge(Node(home_team_full_name, home_team), Node(visitor_team_full_name, visitor_team), dictionary)
-        graph.printGraph()
+        print(graph)
         return graph
