@@ -23,7 +23,7 @@
                 <div class="tools-row-1">
 
                     <select id="visualizer_select" onchange="redirect()">
-                        <option value="0"> Visualizer </option>
+                        <option value="0" disabled selected hidden> Visualizer </option>
                         {% if visualizers %}
                             {% for vs in visualizers %}
                                 <option value="{{ forloop.counter }}">{{ vs.name }}</option>
@@ -31,7 +31,7 @@
                         {% endif %}
                     </select>
                     <select id="data_source_select" onchange="redirect()">
-                        <option value="0"> Data source </option>
+                        <option value="0" disabled selected hidden> Data source </option>
                         {% if data_sources %}
                             {% for ds in data_sources %}
                                 <option value="{{ forloop.counter }}">{{ ds.name }}</option>
@@ -51,14 +51,10 @@
 
         <main>
             <div class="side-menu">
-                <div class="tree-view">
-    {#                <div class="center">{% block content %}{% endblock %}</div>#}
-                </div>
-                <div class="bird-view">
-
-                </div>
+                <div class="tree-view"></div>
+                <div id="bird-view" class="bird-view"></div>
             </div>
-            <div class="main-view">
+            <div id="main-view" class="main-view">
                 {{ main_view|safe }}
             </div>
         </main>

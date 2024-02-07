@@ -1,0 +1,230 @@
+{% block head_content %}
+<style>
+    .node {
+        cursor: pointer;
+        background: var(--github-background-1);
+        {#background: darkred;#}
+        color: var(--github-text);
+        stroke: var(--github-text);
+    }
+
+    .link {
+        fill: none;
+        {#stroke: var(--github-button);#}
+        stroke: darkred;
+        stroke-width: 2px;
+    }
+</style>
+<script type="text/javascript" src="https://d3js.org/d3.v7.js"></script>
+{% endblock %}
+{% block content %}
+    <script>
+        const svg = d3.create("svg")
+            .attr("width", "100%")
+            .attr("height", "100%");
+
+        // Append SVG container for the graph to the body
+        document.getElementById("main-view").appendChild(svg.node());
+
+        // Get the actual width and height of the SVG element
+        const width = svg.node().getBoundingClientRect().width;
+        const height = svg.node().getBoundingClientRect().height;
+
+        console.log("SVG WIDTH: ", width);
+        console.log("SVG HEIGHT: ", height);
+
+        // Sample data with nodes and links
+        let nodesData={
+            {% for node in graph.nodes %}
+                "node_{{node.id}}": {
+                    id: "node_{{ node.id }}",
+                    name:"{{node.id}}",
+                    value:{
+                        {% for key, value in node.value.items() %}
+                            "{{ key }}": "{{ value }}"{% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    }
+                },
+
+            {% endfor %}
+        };
+
+        let links=[
+            {% for p in graph.branches %}
+                  {
+                      source:"node_{{p.source.id}}",
+                      target:"node_{{p.destination.id}}"
+                  },
+            {% endfor %}
+        ];
+
+        // Convert the nodesData object to an array
+        let nodes = Object.values(nodesData);
+
+        // Create a force simulation
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(30))
+            .force("charge", d3.forceManyBody().strength(-2000))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .on("tick", tick);
+
+        const graphContainer = svg.append("g");
+
+        // Create links
+        const link = graphContainer.selectAll(".link")
+            .data(links)
+            .join("line")
+            .attr("class", "link");
+
+        // Create nodes
+        const node = graphContainer.selectAll(".node")
+            .data(nodes)
+            .join("g")
+            .attr("class", "node")
+            .call(d3.drag().on("start", dragStarted).on("drag", dragged).on("end", dragEnded));
+
+        // Append circles to the nodes
+        node.append("circle")
+            .attr("r", 10) // Initial radius
+
+        // Append text to the nodes
+        node.append("text")
+            .text(d => d.name)
+            .attr("dy", "0.35em") // Adjust text vertical alignment
+            .style("text-anchor", "middle"); // Center text within the circle
+
+        const minimap = d3.create("svg")
+            .attr("width", "100%")  // Set the width of the minimap
+            .attr("height", "100%"); // Set the height of the minimap
+
+        const graphWidth = graphContainer.node().getBoundingClientRect().width;
+        const graphHeight = graphContainer.node().getBoundingClientRect().height;
+
+        console.log("GRAPH WIDTH: ", width);
+        console.log("GRAPH HEIGHT: ", height);
+
+        document.getElementById("bird-view").appendChild(minimap.node());
+        const minimapWidth = minimap.node().getBoundingClientRect().width;
+        const minimapHeight = minimap.node().getBoundingClientRect().height;
+
+        const minimapScaleX = minimapWidth / width;
+        const minimapScaleY = minimapHeight / height;
+
+        const minimapScale = Math.min(minimapScaleX, minimapScaleY);
+
+        const minimapGraphContainer = minimap.append("g")
+            .attr("transform", `scale(0.5) translate(${minimapWidth / 2}, ${minimapHeight / 2}) `); // Adjust the translation as needed
+
+        // Render the entire graph in the minimap with reduced opacity
+        const minimapLink = minimapGraphContainer.selectAll(".link")
+            .data(links)
+            .enter().append("line")
+            .attr("class", "link")
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y)
+
+        const minimapNode = minimapGraphContainer.selectAll(".node")
+            .data(nodes)
+            .enter().append("circle")
+            .attr("class", "node")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", 5);
+
+        // Update positions on each tick
+        function tick() {
+            // Update link positions
+            link.attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            // Update node positions for the main graph
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+
+            // Adjust circle size based on text length for the main graph nodes
+            node.select("circle")
+                .attr("r", d => computeRadius(d.name));
+
+            // Update link positions for the minimap
+            minimapLink.attr("x1", d => d.source.x * minimapScale)
+                .attr("y1", d => d.source.y * minimapScale)
+                .attr("x2", d => d.target.x * minimapScale)
+                .attr("y2", d => d.target.y * minimapScale);
+
+            // Update node positions for the minimap
+            minimapNode.attr("cx", d => d.x * minimapScale)
+                .attr("cy", d => d.y * minimapScale);
+        }
+
+        function computeRadius(text) {
+            return Math.max(10, text.length * 3);
+        }
+
+        function dragStarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragEnded(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        {#function zoomed(event) {#}
+        {#    // Update the graph elements based on the zoom and pan transformation#}
+        {#    graphContainer.attr("transform", event.transform);#}
+        {#---}#}
+
+        const viewportIndicator = minimapGraphContainer.append("rect")
+            .attr("class", "viewport-indicator")
+            .attr("fill", "none")
+            .attr("stroke", "white") // Set the border color to darkred
+            .attr("stroke-width", 2);
+
+        function zoomed(event) {
+            const { transform } = event;
+            // apply calculated transform to the image
+            graphContainer.attr("transform", transform.toString());
+
+            const scale = 1 / transform.k;
+
+            const inverseTransform = new d3.ZoomTransform(
+                scale,
+                -transform.x * scale * minimapScaleX,
+                -transform.y * scale * minimapScaleY
+            );
+
+            // rect.attr("transform", inverseTransform.toString());
+            viewportIndicator.attr("transform", inverseTransform.toString());
+        }
+
+        function updateViewport() {
+            const {
+                width: svgWidth,
+                height: svgHeight
+            } = svg.node().getBoundingClientRect();
+
+            viewportIndicator.attr("width", svgWidth * minimapScaleX).attr("height", svgHeight * minimapScaleY);
+        }
+
+        updateViewport();
+
+        const zoom = d3.zoom()
+            .scaleExtent([1, 10]) // Set the zoom scale limits as needed
+            .on("zoom", zoomed);
+
+        svg.call(zoom);
+
+        window.addEventListener("resize", updateViewport);
+    </script>
+{% endblock %}
