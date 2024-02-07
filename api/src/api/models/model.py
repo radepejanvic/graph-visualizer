@@ -13,6 +13,9 @@ class Branch:
         self.destination = destination
         self.value = value
 
+    def __contains__(self, item):
+        return self.source == item or self.destination == item
+
 
 class Graph(ABC):
     def __init__(self):
@@ -37,6 +40,9 @@ class Graph(ABC):
             self.add_node(destination)
 
         self.branches.append(Branch(source, destination, value))
+
+    def get_branches_for_node(self, node):
+        return [branch for branch in self.b if node in branch]
 
     def __str__(self):
         return "".join([f"{b.source.id} ---> {b.destination.id}: {b.value}\n" for b in self.branches])
