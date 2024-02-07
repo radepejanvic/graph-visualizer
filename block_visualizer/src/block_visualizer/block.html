@@ -19,7 +19,8 @@
     }
 </script>
 {% endblock %} {% block content %}
-<svg width="100%" height="100%"></svg>
+<svg width="100%" height="100%" id="map"></svg>
+<div id="minimap"></div>
 <script>
     let height = 100;
     let width = 150;
@@ -41,12 +42,10 @@
 
 
     var links=[
-        {% for p in graph.nodes %}
-           {% for a in p.branches %}
+        {% for p in graph.branches %}
               {
-                  source:"node_{{p.id}}",
-                  target:"node_{{a.destination.id}}"},
-           {% endfor %}
+                  source:"node_{{p.source.id}}",
+                  target:"node_{{p.destination.id}}"},
         {% endfor %}
     ];
 
