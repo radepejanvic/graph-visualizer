@@ -12,7 +12,7 @@ class SimpleVisualizer(VisualizerBase):
         return "Simple Visualizer"
 
     def display(self, graph: Graph):
-        template_dir = "/simple-visualizer/src/simple_visualizer"
+        template_dir = "../simple-visualizer/src/simple_visualizer"
         env = Environment(loader=FileSystemLoader(template_dir))
         template = env.get_template("simple.html")
         data = {
