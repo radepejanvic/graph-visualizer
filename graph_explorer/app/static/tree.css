@@ -88,4 +88,6 @@ li, details, summary, span {
     filter: invert(90%) sepia(60%) saturate(3697%) hue-rotate(323deg) brightness(94%) contrast(87%);
 }
 
-
+ul:not(#tree) {
+    padding-left: 20px;
+}
