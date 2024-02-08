@@ -71,6 +71,6 @@ class NBADataSource(DataSourceBase):
 
             dictionary["score"] = str(home_team_score) + ":" + str(visitor_team_score)
             dictionary["date"] = date
-            graph.add_branch(Node(home_team_full_name, home_team), Node(visitor_team_full_name, visitor_team), dictionary)
+            graph.add_branch(Node(home_team_full_name, home_team), Node(visitor_team_full_name, visitor_team), dictionary, True)
         print(graph)
         return graph
