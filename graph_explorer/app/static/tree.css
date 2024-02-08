@@ -1,0 +1,63 @@
+:root {
+    --arrow: url(arrow.svg);
+    --node: url(node.svg);
+    --branch: url(arrow.svg);
+    --branch-inc: url(arrow.svg);
+    --branch-out: url(arrow.svg);
+}
+
+ul {
+    list-style: none;
+    line-height: 2em;
+}
+
+#tree {
+    padding: 10px;
+    margin: 0;
+}
+
+ul summary {
+    cursor: pointer;
+}
+
+ul li {
+    position: relative;
+}
+
+details>summary {
+    list-style: none;
+}
+
+details>summary::before {
+    display: inline-block;
+    width: min-content;
+    height: min-content;
+    content: var(--arrow);
+    filter: invert(89%) sepia(4%) saturate(886%) hue-rotate(189deg) brightness(108%) contrast(91%);
+    transition: transform 0.3s ease;
+}
+
+details[open]>summary::before {
+    transform: rotate(90deg);
+    transition: transform 0.3s ease;
+}
+
+span {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.inc {
+
+}
+
+.out {
+
+}
+
+.und {
+    margin-right: 5px;
+    filter: invert(89%) sepia(4%) saturate(886%) hue-rotate(189deg) brightness(108%) contrast(91%);
+}
+
