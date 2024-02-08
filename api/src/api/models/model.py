@@ -37,13 +37,13 @@ class Graph(ABC):
     def add_node(self, node: Node):
         self.n[node.id] = node
 
-    def add_branch(self, source: Node, destination: Node, value=None):
+    def add_branch(self, source: Node, destination: Node, value=None, directed=False):
         if source.id not in self.nodes:
             self.add_node(source)
         if destination.id not in self.nodes:
             self.add_node(destination)
 
-        self.branches.append(Branch(source.id, destination.id, value))
+        self.branches.append(Branch(source.id, destination.id, value, directed))
 
     def get_branches_for_node(self, node):
         return [branch for branch in self.b if node in branch]
