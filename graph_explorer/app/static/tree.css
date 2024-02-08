@@ -1,9 +1,11 @@
 :root {
     --arrow: url(arrow.svg);
     --node: url(node.svg);
-    --branch: url(arrow.svg);
-    --branch-inc: url(arrow.svg);
-    --branch-out: url(arrow.svg);
+    --branch: url(undirected.svg);
+    --branch-inc: url(end_node.svg);
+    --branch-out: url(start_node.svg);
+    --branch-dir-left: url(directed_left.svg);
+    --branch-dir-right: url(directed_right.svg);
 }
 
 ul {
@@ -18,10 +20,12 @@ ul {
 
 ul summary {
     cursor: pointer;
+    height: min-content;
 }
 
 ul li {
     position: relative;
+    white-space:nowrap;
 }
 
 details>summary {
@@ -33,6 +37,7 @@ details>summary::before {
     width: min-content;
     height: min-content;
     content: var(--arrow);
+    margin-right: 4px;
     filter: invert(89%) sepia(4%) saturate(886%) hue-rotate(189deg) brightness(108%) contrast(91%);
     transition: transform 0.3s ease;
 }
@@ -46,18 +51,41 @@ span {
     display: inline-flex;
     flex-direction: row;
     align-items: center;
+    /*height: min-content;*/
 }
 
-.inc {
-
+li, details, summary, span {
+    height: min-content;
 }
 
-.out {
-
+.inc::before {
+    content: var(--branch-dir-left);
+    display: inline-block;
+    width: min-content;
+    height: min-content;
+    padding-top: 6px;
+    margin-right: 2px;
+    filter: invert(58%) sepia(52%) saturate(4194%) hue-rotate(326deg) brightness(93%) contrast(111%);
 }
 
-.und {
-    margin-right: 5px;
-    filter: invert(89%) sepia(4%) saturate(886%) hue-rotate(189deg) brightness(108%) contrast(91%);
+.out::before {
+    content: var(--branch-dir-right);
+    display: inline-block;
+    width: min-content;
+    height: min-content;
+    padding-top: 6px;
+    margin-right: 2px;
+    filter: invert(37%) sepia(85%) saturate(446%) hue-rotate(80deg) brightness(93%) contrast(87%);
 }
+
+.none::before {
+    content: var(--branch);
+    display: inline-block;
+    width: min-content;
+    height: min-content;
+    padding-top: 6px;
+    margin-right: 2px;
+    filter: invert(90%) sepia(60%) saturate(3697%) hue-rotate(323deg) brightness(94%) contrast(87%);
+}
+
 

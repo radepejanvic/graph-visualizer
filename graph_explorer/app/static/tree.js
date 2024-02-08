@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (mainView.children.length > 0) {
         for (let node of nodes) {
             // TODO: If node structure is changed, this should too
-            treeUl.appendChild(createExpandableElement(node.name, "none"));
+            treeUl.appendChild(createExpandableElement(node.name));
         }
     }
 });
@@ -31,7 +31,7 @@ function createExpandableElement(node, direction) {
     span.appendChild(img);
 
     span.textContent = node;
-    span.setAttribute("data-direction", direction);
+    span.classList.add(direction);
 
     details.addEventListener("click", fetchChildNodes);
     details.setAttribute("data-visited", "false");
