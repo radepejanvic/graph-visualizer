@@ -38,6 +38,7 @@ main {
     display: flex;
     flex-direction: row;
     background: var(--github-background-1);
+    overflow: hidden;
 }
 
 header {
@@ -60,6 +61,7 @@ footer {
     padding: 0 10px 0 10px;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .main-view {
@@ -74,13 +76,24 @@ footer {
     background: var(--github-background-2);
 }
 
+.tree-view {
+    flex-grow: 1;
+    overflow: auto;
+}
+
 .bird-view {
     aspect-ratio: 16/9;
     margin-top: 10px;
 }
 
-.tree-view {
-    flex-grow: 1;
+::-webkit-scrollbar {
+    width: 12px; /* Set the width of the scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--github-button); /* Set the color of the scrollbar thumb */
+    border-radius: 4px; /* Set the border radius of the thumb */
+    /*padding-right: 5px;*/
 }
 
 .logo {

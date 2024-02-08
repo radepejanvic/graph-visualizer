@@ -5,7 +5,9 @@
         {% load static %}
         <script type="text/javascript" src="{% static 'd3.v3.js' %}"></script>
         <script type="text/javascript" src="{% static 'script.js' %}"></script>
+        <script type="text/javascript" src="{% static 'tree.js' %}"></script>
         <link rel="stylesheet" href="{% static 'base.css' %}" />
+        <link rel="stylesheet" href="{% static 'tree.css' %}" />
         <title> Graph visualizer </title>
         {% block head_content %}{% endblock %}
 
@@ -51,7 +53,10 @@
 
         <main>
             <div class="side-menu">
-                <div class="tree-view"></div>
+                <div class="tree-view">
+                    <ul id="tree">
+                    </ul>
+                </div>
                 <div id="bird-view" class="bird-view"></div>
             </div>
             <div id="main-view" class="main-view">
