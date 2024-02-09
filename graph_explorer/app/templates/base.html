@@ -8,6 +8,7 @@
         <script type="text/javascript" src="{% static 'tree.js' %}"></script>
         <link rel="stylesheet" href="{% static 'base.css' %}" />
         <link rel="stylesheet" href="{% static 'tree.css' %}" />
+        <link rel="stylesheet" href="{% static 'workspace.css' %}" />
         <title> Graph visualizer </title>
         {% block head_content %}{% endblock %}
 
@@ -65,6 +66,11 @@
         </main>
 
         <footer>
+            <div class="workspace">workspace 1</div>
+            <div class="workspace">workspace 2</div>
+            <div class="workspace">workspace 3</div>
+            <div class="workspace">workspace 4</div>
+            <div id="add-workspace"> + </div>
             <!-- TODO: Place workspaces -->
         </footer>
     </body>

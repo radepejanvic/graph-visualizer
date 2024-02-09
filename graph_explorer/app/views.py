@@ -30,3 +30,10 @@ def get_children(request, node):
     data = json.dumps([branch.__dict__ for branch in core.graph.get_branches_for_node(node)], cls=DjangoJSONEncoder)
 
     return JsonResponse(data, safe=False) if request.method == 'GET' else JsonResponse({}, safe=False)
+
+def switch_workspace(request, workspace):
+
+    pass
+
+def add_workspace(request):
+    pass
