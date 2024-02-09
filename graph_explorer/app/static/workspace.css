@@ -3,6 +3,8 @@ footer {
     flex-direction: row;
     align-items: center;
     padding-left: 10px;
+    overflow-y: hidden;
+    overflow-x: auto;
 }
 
 .workspace {
@@ -10,15 +12,17 @@ footer {
     align-items: center;
     padding: 5px 6px 5px 5px ;
     margin-right: 5px;
-    border-right: 1px solid var(--github-border);
+    border-right: 1px solid var(--github-text);
     cursor: pointer;
+    border-radius: 5px;
+    white-space:nowrap;
 }
 
 #add-workspace {
-    background: var(--github-border);
-    margin-left: -6px;
+    background: var(--github-button);
     display: flex;
     align-items: center;
     padding: 5px;
     cursor: pointer;
+    border-radius: 5px;
 }
