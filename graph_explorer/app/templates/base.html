@@ -9,41 +9,48 @@
         <link rel="stylesheet" href="{% static 'base.css' %}" />
         <link rel="stylesheet" href="{% static 'tree.css' %}" />
         <link rel="stylesheet" href="{% static 'workspace.css' %}" />
-        <title> Graph visualizer </title>
+        <title>Graph visualizer</title>
         {% block head_content %}{% endblock %}
-
     </head>
     <body>
         <header>
             <div class="logo">
                 <h1>
-                    <img src="{% static 'logo.svg' %}" alt="logo.svg" class="filter-color"/>
+                    <img
+                        src="{% static 'logo.svg' %}"
+                        alt="logo.svg"
+                        class="filter-color"
+                    />
                     GRAPHV
                 </h1>
-                <h3> Graph visualization tool</h3>
+                <h3>Graph visualization tool</h3>
             </div>
             <div class="toolbar">
                 <div class="tools-row-1">
-
                     <select id="visualizer_select" onchange="redirect()">
-                        <option value="0" disabled selected hidden> Visualizer </option>
-                        {% if visualizers %}
-                            {% for vs in visualizers %}
-                                <option value="{{ forloop.counter }}">{{ vs.name }}</option>
-                            {% endfor %}
-                        {% endif %}
+                        <option value="0" disabled selected hidden>
+                            Visualizer
+                        </option>
+                        {% if visualizers %} {% for vs in visualizers %}
+                        <option value="{{ forloop.counter }}">
+                            {{ vs.name }}
+                        </option>
+                        {% endfor %} {% endif %}
                     </select>
                     <select id="data_source_select" onchange="redirect()">
-                        <option value="0" disabled selected hidden> Data source </option>
-                        {% if data_sources %}
-                            {% for ds in data_sources %}
-                                <option value="{{ forloop.counter }}">{{ ds.name }}</option>
-                            {% endfor %}
-                        {% endif %}
+                        <option value="0" disabled selected hidden>
+                            Data source
+                        </option>
+                        {% if data_sources %} {% for ds in data_sources %}
+                        <option value="{{ forloop.counter }}">
+                            {{ ds.name }}
+                        </option>
+                        {% endfor %} {% endif %}
                     </select>
-                    <form>
-                        <input type="text" id="search" name="search" placeholder="Search & filter">
-                        <button type="submit">Apply</button>
+
+                    <form method="post">
+                        {% csrf_token %}{{ forma.filter }}
+                        <button type="submit" value="Submit">Apply</button>
                     </form>
                 </div>
                 <div class="tools-row-2">
@@ -55,14 +62,11 @@
         <main>
             <div class="side-menu">
                 <div class="tree-view">
-                    <ul id="tree">
-                    </ul>
+                    <ul id="tree"></ul>
                 </div>
                 <div id="bird-view" class="bird-view"></div>
             </div>
-            <div id="main-view" class="main-view">
-                {{ main_view|safe }}
-            </div>
+            <div id="main-view" class="main-view">{{ main_view|safe }}</div>
         </main>
 
         <footer>
