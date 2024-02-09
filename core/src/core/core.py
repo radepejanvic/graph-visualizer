@@ -4,6 +4,7 @@ import pkg_resources
 
 from api.src.api.models.model import Graph
 from api.src.api.services.base import DataSourceBase, VisualizerBase
+from core.src.core.use_cases.filter.filter import filter,search
 
 DATA_SOURCES = "data_sources"
 VISUALIZERS = "visualizers"
@@ -48,3 +49,11 @@ class Core(ABC):
 
     def display_graph(self, visualizer: int) -> str:
         return self.vs[visualizer].display(self.g)
+    
+    def filter_graph(self, key:str,value_filter:str|int|float,operation:str):
+        filter(self.g,key,value_filter,operation)
+
+    def search_graph(self, value_filter:str|int|float):
+        search(self.g,value_filter)
+
+  
