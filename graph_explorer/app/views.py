@@ -20,6 +20,7 @@ def index(request):
 
 def main_view(request, visualizer: int, data_source: int):
     core = apps.get_app_config("app").core
+
     if request.method == 'POST':
         form = MyForm(request.POST)
         if form.is_valid():
@@ -31,19 +32,19 @@ def main_view(request, visualizer: int, data_source: int):
             if match:
                 operator, value = re.split(r'\s*{}\s*'.format(match.group()), filter)
                 try:
-                    value = int(value)  
+                    value = int(value)
                 except ValueError:
                     pass
-                
+
                 core.filter_graph(operator, value, operators[match.group()])
-                
+
 
             else:
                 core.search_graph(filter)
     else:
         form = MyForm()
         core.load_graph(data_source)
-          
+
     data = {"title": "Index",
             "data_sources": core.data_sources,
             "visualizers": core.visualizers,
@@ -60,9 +61,34 @@ def get_children(request, node):
 
     return JsonResponse(data, safe=False) if request.method == 'GET' else JsonResponse({}, safe=False)
 
-def switch_workspace(request, workspace):
-
-    pass
 
 def add_workspace(request):
-    pass
+    app = apps.get_app_config("app")
+    app.add_workspace()
+
+    data = {"message": f"Workspace count: {len(app.workspaces)}"}
+    return JsonResponse(data)
+
+
+def get_workspace_count(request):
+    app = apps.get_app_config("app")
+
+    data = {"count": f"{len(app.workspaces)}"}
+    return JsonResponse(data)
+
+
+def switch_workspace(request, workspace: int):
+    app = apps.get_app_config("app")
+    app.switch_workspace(workspace)
+    core = app.core
+
+    data = {"title": "Index",
+            "data_sources": core.data_sources,
+            "visualizers": core.visualizers,
+            "main_view": core.display_graph(app.visualizer),
+            "nodes": core.graph.nodes.keys()}
+
+    return render(request, "index.html", data)
+
+
+
