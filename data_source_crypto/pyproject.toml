@@ -1,5 +1,5 @@
 [project]
-name = "dsnba"
+name = "dscrypto"
 version = "0.1"
 
 [build-system]
@@ -7,4 +7,4 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project.entry-points."data_sources"]
-dsnba = "data_source_nba.data_source_nba:NBADataSource"
+dscrypto = "data_source_crypto.data_source_crypto:CryptoDataSource"
