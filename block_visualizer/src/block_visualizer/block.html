@@ -74,7 +74,7 @@
             .data(nodes)
             .join("g")
             .attr("class", "node")
-            .attr('id', function(d){return d.name;})
+            .attr('id', function(d){return d.id;})
             .call(d3.drag().on("start", dragStarted).on("drag", dragged).on("end", dragEnded))
             .each(function(d){complexView(d);});
 
@@ -83,14 +83,14 @@
             const blockWidth = 150;
             const blockHeight = textSize + 30 + textSize * Object.keys(d.value).length;
 
-            d3.select(`g#${d.name}`)
+            d3.select(`g#${d.id}`)
                 .append('rect')
                 .attr('x', 0)
                 .attr('y', 0)
                 .attr('width', blockWidth)
                 .attr('height', blockHeight);
 
-            d3.select(`g#${d.name}`)
+            d3.select(`g#${d.id}`)
                 .append('text')
                 .attr('x', blockWidth / 2)
                 .attr('y', 10)
@@ -99,7 +99,7 @@
                 .attr('font-family', 'sans-serif')
                 .text(d.name);
 
-            d3.select(`g#${d.name}`)
+            d3.select(`g#${d.id}`)
                 .append('line')
                 .attr('x1', 0)
                 .attr('y1', textSize + 10)
@@ -109,7 +109,7 @@
                 .attr('stroke-width', 2);
 
             Object.entries(d.value).forEach(([key, value], index) => {
-                d3.select(`g#${d.name}`)
+                d3.select(`g#${d.id}`)
                     .append('text')
                     .attr('x', 10)
                     .attr('y', 20 + index * textSize + 15)
@@ -235,7 +235,7 @@
         updateViewport();
 
         const zoom = d3.zoom()
-            .scaleExtent([1, 10])
+            .scaleExtent([0.1, 10])
             .on("zoom", zoomed);
 
         svg.call(zoom);
