@@ -1,0 +1,11 @@
+[project]
+name = "dsflights"
+version = "0.1"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project.entry-points."data_sources"]
+dsflights = "data_source_xml.data_source_flights:FlightsDataSource"
+
