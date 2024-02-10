@@ -140,7 +140,8 @@
         const minimapScale = Math.min(minimapScaleX, minimapScaleY);
 
         const minimapGraphContainer = minimap.append("g")
-            .attr("transform", `scale(0.5) translate(${minimapWidth / 2}, ${minimapHeight / 2}) `);
+            .attr("transform", `scale(0.2) translate(${minimapWidth / 2 + 1.5 * minimapWidth}, ${minimapHeight / 2 +  0.7 * minimapWidth}) `); // Adjust the translation as needed
+
 
         const minimapLink = minimapGraphContainer.selectAll(".link")
             .data(links)
