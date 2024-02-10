@@ -53,15 +53,15 @@ Position yourself inside `graph-explorer` directory and run the following comman
 py .\manage.py runserver 
 ```
 
+Open browser and paste the following URL: 
+```
+http://127.0.0.1:8000
+```
+
 ## Run CLI app
 ```console
 pip install .\core
 graphv
-```
-
-Open browser and paste the following URL: 
-```
-http://127.0.0.1:8000
 ```
 
 ## Authors
