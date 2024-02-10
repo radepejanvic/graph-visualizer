@@ -26,13 +26,12 @@ def filter(graph:Graph, key:str,value_filter:str|int|float,operation:str):
     graph.b = new_branches
     
 
-def search(graph:Graph, value_filter:str|int|float):   
+def search(graph:Graph, query: str | int | float):
     
-    if isinstance(value_filter, (int, float)):
-        new_nodes = {node.id: node for node in graph.n.values() if  value_filter in node.value.values() or value_filter in node.id }
+    if isinstance(query, (int, float)):
+        new_nodes = {node.id: node for node in graph.n.values() if query in node.value.values() or query in node.id}
     else:
-        new_nodes = {node.id: node for node in graph.n.values() if  value_filter in node.value.values() or value_filter in node.id }
-
+        new_nodes = {node.id: node for node in graph.n.values() if any(value is not None and query in value for value in node.value.values()) or query in node.id}
 
     graph.n = new_nodes
     new_branches = [branch for branch in graph.b if branch.source in graph.n and branch.destination in graph.n]
