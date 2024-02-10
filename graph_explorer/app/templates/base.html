@@ -49,8 +49,9 @@
                         {% endfor %} {% endif %}
                     </select>
 
-                    <form method="post">
-                        {% csrf_token %}{{ forma.filter }}
+                    <form action="{% url 'filter' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="text" id="search" name="query" placeholder="Search & filter"/>
                         <button type="submit" value="Submit">Apply</button>
                     </form>
                 </div>
