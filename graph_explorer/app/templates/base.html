@@ -6,8 +6,10 @@
         <script type="text/javascript" src="{% static 'd3.v3.js' %}"></script>
         <script type="text/javascript" src="{% static 'script.js' %}"></script>
         <script type="text/javascript" src="{% static 'tree.js' %}"></script>
+        <script type="text/javascript" src="{% static 'workspace.js' %}"></script>
         <link rel="stylesheet" href="{% static 'base.css' %}" />
         <link rel="stylesheet" href="{% static 'tree.css' %}" />
+        <link rel="stylesheet" href="{% static 'workspace.css' %}" />
         <title>Graph visualizer</title>
         {% block head_content %}{% endblock %}
     </head>
@@ -47,8 +49,9 @@
                         {% endfor %} {% endif %}
                     </select>
 
-                    <form method="post">
-                        {% csrf_token %}{{ forma.filter }}
+                    <form action="{% url 'filter' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="text" id="search" name="query" placeholder="Search & filter"/>
                         <button type="submit" value="Submit">Apply</button>
                     </form>
                 </div>
@@ -69,7 +72,7 @@
         </main>
 
         <footer>
-            <!-- TODO: Place workspaces -->
+            <div id="add-workspace">  +  </div>
         </footer>
     </body>
 </html>
