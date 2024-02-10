@@ -1,87 +1,66 @@
-
-# def console_menu(*args, **kwargs):
-#     plugini: List[Union[FakultetUcitatiBase, FakultetPrikazBase]] = \
-#         kwargs.get("fakultet_ucitavanje", []) + kwargs.get("fakultet_prikaz", [])
-#     if not plugini:
-#         print("Nije prepoznati nijedan plugin!")
-#         return
-#     greska = False
-#     poruka = None
-#     while True:
-#         print("-----------------------------------")
-#         if greska:
-#             print("Uneli ste pogresnu vrednost za opciju")
-#             greska = False
-#         if poruka:
-#             print(poruka)
-#         print("Izaberite broj opcije:")
-#         for i, plugin in enumerate(plugini):
-#             print(f"{i} {plugin.identifier()} {plugin.name()}")
-#         print(f"{len(plugini)} za izlaz")
-#         try:
-#             izbor = int(input("Unesite redni broj opcije:"))
-#         except:
-#             greska = True
-#             continue
-#         if izbor == len(plugini):
-#             return
-#         elif 0 <= izbor < len(plugini):
-#             poruka = izabrana_opcija(plugini[izbor], **kwargs)
-#         else:
-#             greska = True
+from typing import List, Union
+from api.src.api.services.base import DataSourceBase, VisualizerBase
+from core import Core
 
 
-# def izabrana_opcija(plugin: Union[FakultetUcitatiBase, FakultetPrikazBase], **kwargs):
-#     try:
-#         if isinstance(plugin, FakultetUcitatiBase):
-#             fakulteti = kwargs["fakulteti"]
-#             pomocna_lista = plugin.ucitati_fakultete()
-#             del fakulteti[:]
-#             fakulteti.extend(pomocna_lista)
-#             return "Ucitani fakulteti"
-#         elif isinstance(plugin, FakultetPrikazBase):
-#             fakulteti = kwargs["fakulteti"]
-#             return plugin.prikazati_fakultete(fakulteti)
-#     except Exception as e:
-#         print(f"Error: {e}")
+def console_menu(core: Core):
+    plugins: List[Union[DataSourceBase, VisualizerBase]] = \
+        core.data_sources + core.visualizers
+
+    if not plugins:
+        print("No plugins found!")
+        return
+
+    error = False
+    message = None
+    while True:
+        print("-----------------------------------")
+        if error:
+            print("Wrong input!")
+            error = False
+        if message:
+            print(message)
+        print("Choose the option: ")
+
+        for i, plugin in enumerate(plugins):
+            print(f"{i}) {plugin.identifier()} - {plugin.name()}")
+        print("X - exit")
+        try:
+            choice = input("Enter the ordinal number of the option: ")
+        except:
+            error = True
+            continue
+        if choice.upper() == "X":
+            return
+        elif 0 <= int(choice) < len(plugins):
+            message = chosen_option(plugins[int(choice)], core)
+        else:
+            error = True
 
 
-# def load_plugins(oznaka):
-#     """
-#     Dinamicko prepoznavanje plagina na osnovu pripadajuce grupe.
-#     """
-#     plugins = []
-#     for ep in pkg_resources.iter_entry_points(group=oznaka):
-#         # Ucitavanje plagina.
-#         p = ep.load()
-#         print(f"{ep.name} {p}")
-#         # instanciranje odgovarajuce klase
-#         plugin = p()
-#         plugins.append(plugin)
-#     return plugins
+def chosen_option(plugin: Union[DataSourceBase, VisualizerBase], core: Core):
+    try:
+        if isinstance(plugin, DataSourceBase):
+            core.graph = plugin.load()
+        elif isinstance(plugin, VisualizerBase):
+            return plugin.display(core.graph)
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 def main():
-    # try:
-    #     fakultet_ucitavanje = load_plugins("fakultet.ucitavanje")
-    #     fakultet_prikaz = load_plugins("fakultet.prikaz")
+    try:
+        core = Core()
+    except Exception as e:
+        print(f"Error: {e}")
+        return
 
-    # except Exception as e:
-    #     print(f"Error: {e}")
-    #     return
-
-    # try:
-    #     fakulteti = []
-    #     console_menu(fakultet_ucitavanje=fakultet_ucitavanje,
-    #                  fakultet_prikaz=fakultet_prikaz,
-    #                  fakulteti=fakulteti)
-
-    # except Exception as e:
-    #     print(f"Error: {e}")
-    #     return
-
-    print("Main metoda iz core-a")
+    try:
+        console_menu(core)
+    except Exception as e:
+        print(f"Error: {e}")
+        return
 
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()

@@ -1,5 +1,5 @@
 [project]
-name = "data-source-json"
+name = "dscrypto"
 version = "0.1"
 
 [build-system]
@@ -7,4 +7,4 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project.entry-points."data_sources"]
-# dsjson = "ovde uneti putanju do klase koja se koristi"
+dscrypto = "data_source_crypto.data_source_crypto:CryptoDataSource"

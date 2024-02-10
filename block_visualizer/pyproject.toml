@@ -1,5 +1,5 @@
 [project]
-name = "simple_visualizer"
+name = "block_visualizer"
 version = "0.1"
 
 [build-system]
@@ -7,4 +7,4 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project.entry-points."visualizers"]
-simple_visualizer = "simple_visualizer.simple_visualizer:SimpleVisualizer"
+block_visualizer = "block_visualizer.block_visualizer:BlockVisualizer"

@@ -1,39 +1,52 @@
-from datetime import datetime
+from abc import ABC
+
 
 class Node:
-    def __init__(self, id,value):
+    def __init__(self, id, value):
         self.id = id
         self.value = value
-        self.branches = []
 
-    def add_branch(self, destination, value=None):
-        new_branch = Branch(destination, value)
-        self.branches.append(new_branch)
 
 class Branch:
-    def __init__(self, destination, value=None):
+    def __init__(self, source, destination, value=None, directed=False):
+        self.source = source
         self.destination = destination
         self.value = value
+        self.directed = directed
 
-class Graph:
+    def __contains__(self, item):
+        return self.source == item or self.destination == item
+
+    def __str__(self):
+        return f"{self.source} {"-->" if self.directed else "---"} {self.destination}: {self.value}"
+
+
+class Graph(ABC):
     def __init__(self):
-        self.nodes = []
+        self.n = {}
+        self.b = []
 
-    def add_node(self, value:Node):
-        self.nodes.append(value)
-        return value
+    @property
+    def nodes(self):
+        return self.n
 
-    def add_edge(self, source:Node, destination:Node, value=None):
-        if source.id not in [node.id for node in self.nodes]:
+    @property
+    def branches(self):
+        return self.b
+
+    def add_node(self, node: Node):
+        self.n[node.id] = node
+
+    def add_branch(self, source: Node, destination: Node, value=None, directed=False):
+        if source.id not in self.nodes:
             self.add_node(source)
-        if destination.id not in [node.id for node in self.nodes]:
+        if destination.id not in self.nodes:
             self.add_node(destination)
 
-        source_node = next(node for node in self.nodes if node.id == source.id)
-        source_node.add_branch(destination, value)
+        self.branches.append(Branch(source.id, destination.id, value, directed))
 
-    def printGraph(self):
-        for node in self.nodes:
-            print(f"Node {node.id}, value:{node.value} :")
-            for branch in node.branches:
-                print(f"  -> {branch.destination.id}")
+    def get_branches_for_node(self, node):
+        return [branch for branch in self.b if node in branch]
+
+    def __str__(self):
+        return "".join([f"{str(branch)}\n" for branch in self.b])

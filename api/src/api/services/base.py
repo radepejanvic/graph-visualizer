@@ -1,22 +1,26 @@
 from abc import ABC, abstractmethod
+from ..models.model import *
+
 
 class ServiceBase(ABC):
     @abstractmethod
-    def identifier(self):
+    def identifier(self) -> str:
         pass
 
     @abstractmethod
-    def name(self):
+    def name(self) -> str:
         pass
+
 
 class DataSourceBase(ServiceBase):
 
     @abstractmethod
-    def load(self):
+    def load(self) -> Graph:
         pass
 
-class VisualizerBase(ServiceBase): 
-    
+
+class VisualizerBase(ServiceBase):
+
     @abstractmethod
-    def display(self):
+    def display(self, graph: Graph) -> str:
         pass
