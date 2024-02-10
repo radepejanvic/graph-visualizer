@@ -10,6 +10,7 @@ from django import forms
 class MyForm(forms.Form):
     filter = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Search & filter'}))
 
+
 def index(request):
     core = apps.get_app_config("app").core
     data = {"title": "Index",
@@ -19,7 +20,11 @@ def index(request):
 
 
 def main_view(request, visualizer: int, data_source: int):
-    core = apps.get_app_config("app").core
+    app = apps.get_app_config("app")
+    core = app.core
+
+    app.visualizer = visualizer
+    app.data_source = data_source
 
     if request.method == 'POST':
         form = MyForm(request.POST)
@@ -82,10 +87,12 @@ def switch_workspace(request, workspace: int):
     app.switch_workspace(workspace)
     core = app.core
 
+    main_view_render = core.display_graph(app.visualizer) if app.visualizer is not None else ""
+
     data = {"title": "Index",
             "data_sources": core.data_sources,
             "visualizers": core.visualizers,
-            "main_view": core.display_graph(app.visualizer),
+            "main_view": main_view_render,
             "nodes": core.graph.nodes.keys()}
 
     return render(request, "index.html", data)

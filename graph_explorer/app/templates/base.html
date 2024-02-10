@@ -6,7 +6,7 @@
         <script type="text/javascript" src="{% static 'd3.v3.js' %}"></script>
         <script type="text/javascript" src="{% static 'script.js' %}"></script>
         <script type="text/javascript" src="{% static 'tree.js' %}"></script>
-        <script type="text/javascript" src="{% static 'workspace.js' %}"></script>
+{#        <script type="text/javascript" src="{% static 'workspace.js' %}"></script>#}
         <link rel="stylesheet" href="{% static 'base.css' %}" />
         <link rel="stylesheet" href="{% static 'tree.css' %}" />
         <link rel="stylesheet" href="{% static 'workspace.css' %}" />
@@ -71,7 +71,7 @@
         </main>
 
         <footer>
-            <div id="add-workspace">  +  </div>
+            {% block workspace %} {% endblock %}
         </footer>
     </body>
 </html>
