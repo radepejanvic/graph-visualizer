@@ -1,4 +1,3 @@
-// TODO: Call get_workspaces instead of hardcoded 1
 var workspaceCount;
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -10,18 +9,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function addWorkspaceToDOM (counter) {
+
+    let a = document.createElement("a");
+    a.setAttribute("href", `/workspace/${counter-1}`);
+
     let workspace = document.createElement("div");
     workspace.textContent = `Workspace ${counter}`;
     workspace.classList.add("workspace");
-    workspace.addEventListener("click", switchWorkspace);
+
+    a.appendChild(workspace);
 
     let footer = document.getElementsByTagName("footer")[0];
-    footer.appendChild(workspace);
-}
-
-function switchWorkspace() {
-    console.log("Switch workspace");
-
+    footer.appendChild(a);
 }
 
 // TODO: Change to be POST request
@@ -62,4 +61,3 @@ function addWorkspace() {
     };
     xhr.send(JSON.stringify({}));
 }
-
