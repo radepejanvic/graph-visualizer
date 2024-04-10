@@ -68,4 +68,3 @@ graphv
 - Nikola Trajković SV45/2021
 - Rade Pejanović SV10/2021
 - Veljko Ivanišević SV44/2021
-- Marko Stojanović SV2/2021 - ???
